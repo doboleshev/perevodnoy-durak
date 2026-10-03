@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Дурак переводной</title>
+  <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+  <div class="table">
+    <header class="topbar">
+      <div>
+        <h1>Дурак переводной</h1>
+        <p id="status" class="status">Соберите стол и раздайте карты</p>
+      </div>
+      <div class="top-actions">
+        <button type="button" id="rules-btn" class="ghost">Правила</button>
+        <button type="button" id="new-game-btn" class="primary">Новая игра</button>
+      </div>
+    </header>
+
+    <section id="opponents" class="opponents"></section>
+
+    <section class="felt">
+      <div class="deck-area">
+        <div class="deck-stack">
+          <div id="trump-slot" class="trump-slot"></div>
+          <div id="deck-pile" class="deck-pile"></div>
+        </div>
+        <p id="deck-count" class="deck-count"></p>
+      </div>
+      <div id="board" class="board"></div>
+      <p id="log" class="log"></p>
+    </section>
+
+    <section class="human">
+      <div class="human-head">
+        <h2 id="human-name">Вы</h2>
+        <div id="actions" class="actions"></div>
+      </div>
+      <div id="hand" class="hand"></div>
+    </section>
+  </div>
+
+  <div id="overlay" class="overlay">
+    <form id="setup" class="dialog">
+      <h2>Новая игра</h2>
+      <p>Откройте эту ссылку вдвоём. Каждый нажимает «Играть вдвоём», и вы садитесь за один стол.</p>
+      <button type="button" id="sit-btn" class="primary">Играть вдвоём</button>
+      <p class="lobby-note">Или одна партия против компьютера.</p>
+      <label>
+        Игроков за столом
+        <select id="player-count" name="players">
+          <option value="2">2 — вы и один соперник</option>
+          <option value="3" selected>3 — вы и двое</option>
+          <option value="4">4 — вы и трое</option>
+        </select>
+      </label>
+      <button type="submit" class="quiet">Раздать с компьютером</button>
+    </form>
+    <div id="wait-panel" class="dialog hidden">
+      <h2>Ждём второго игрока</h2>
+      <p id="wait-text">Отправьте ему эту же ссылку. Партия начнётся, когда он тоже нажмёт «Играть вдвоём».</p>
+      <button type="button" id="wait-cancel" class="quiet">Отмена</button>
+    </div>
+  </div>
+
+  <div id="rules" class="overlay hidden">
+    <div class="dialog rules">
+      <h2>Правила</h2>
+      <ul>
+        <li>Колода из 36 карт, от шестёрки до туза. У каждой раздачи свой козырь — он лежит под колодой.</li>
+        <li>Старшая карта той же масти бьёт младшую. Козырь бьёт любую некозырную карту.</li>
+        <li>Первый ход у того, у кого младший козырь.</li>
+        <li>Атакующий кладёт одну или несколько карт одного достоинства, затем защищающийся отбивается.</li>
+        <li>Пока ни одна карта не побита, защиту можно перевести: положить карту того же достоинства. Атака переходит следующему, и бить нужно уже все карты. Перевод возможен, только если у следующего хватает карт.</li>
+        <li>После того как карты начали бить, перевод закрыт. Остальные могут подкидывать карты тех достоинств, которые уже есть на столе. Всего не больше шести и не больше, чем карт было у защищающегося.</li>
+        <li>Не отбился — забирает всё со стола, и ходит следующий за ним. Отбился — карты в отбой, и ход переходит к нему.</li>
+        <li>После круга игроки добирают до шести карт: первым атаковавший, последним защищавшийся.</li>
+        <li>Когда колода пуста, вышедшие из игры больше не ходят. Кто остался с картами один — дурак. Если карты кончились у всех сразу — ничья.</li>
+      </ul>
+      <button type="button" id="rules-close" class="primary">Понятно</button>
+    </div>
+  </div>
+
+  <div id="result" class="overlay hidden">
+    <div class="dialog">
+      <h2 id="result-title">Игра окончена</h2>
+      <p id="result-text"></p>
+      <div class="dialog-actions">
+        <button type="button" id="result-setup" class="quiet">Изменить стол</button>
+        <button type="button" id="result-again" class="primary">Ещё раз</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js?v=4"></script>
+</body>
+</html>

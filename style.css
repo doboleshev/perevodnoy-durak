@@ -1,0 +1,625 @@
+:root {
+  --felt: #0f5a38;
+  --felt-dark: #0a3d26;
+  --wood: #2a1b12;
+  --cream: #f4efe4;
+  --gold: #d4b36a;
+  --ink: #1c1915;
+  --red: #b42318;
+  --muted: #d5e6da;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--cream);
+  font-family: "Segoe UI", sans-serif;
+  background:
+    radial-gradient(ellipse at 50% 0%, #4a3020 0%, transparent 42%),
+    linear-gradient(180deg, #2c1c13 0%, #140e0a 100%);
+}
+
+button, select {
+  font: inherit;
+}
+
+button, .card {
+  touch-action: manipulation;
+}
+
+.table {
+  max-width: 1100px;
+  margin: 14px auto;
+  min-height: calc(100vh - 28px);
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 80px),
+    #23160f;
+  border: 1px solid #5a3b24;
+  border-radius: 28px;
+  box-shadow:
+    0 24px 50px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.topbar, .human-head, .top-actions, .actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+h1, h2 { margin: 0; font-weight: 650; }
+h1 { font-size: 28px; letter-spacing: 0.02em; }
+h2 { font-size: 18px; }
+
+.status, .log, .deck-count {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.top-actions, .actions { justify-content: flex-end; flex-wrap: wrap; }
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.primary {
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.ghost, .action {
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid rgba(247, 241, 227, 0.45);
+}
+
+.action.danger { border-color: #f0b4ac; color: #ffd7d1; }
+
+.opponents {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  min-height: 132px;
+}
+
+.seat {
+  width: 220px;
+  padding: 10px 12px 12px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid transparent;
+}
+
+.seat.active {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px rgba(230, 195, 106, 0.35);
+}
+
+.seat.out { opacity: 0.45; }
+
+.seat-name {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.backs { display: flex; min-height: 64px; }
+
+.backs .back {
+  width: 46px;
+  height: 66px;
+  margin-right: -24px;
+}
+
+.backs .back:last-child { margin-right: 0; }
+
+.back {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #171a32;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.28);
+}
+
+.back-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.felt {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 18px;
+  border-radius: 18px;
+  min-height: 280px;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(255, 255, 255, 0.08), transparent 58%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0 1px, transparent 1px 4px),
+    radial-gradient(ellipse at 50% 45%, #1a7344 0%, #0f5532 52%, #0a3b24 100%);
+  border: 8px solid #3d2818;
+  box-shadow:
+    inset 0 0 0 2px #c6a56a,
+    inset 0 0 48px rgba(0, 0, 0, 0.38),
+    0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.deck-area { text-align: center; }
+
+.deck-stack {
+  position: relative;
+  width: 160px;
+  height: 116px;
+  margin: 0 auto 6px;
+}
+
+.deck-pile,
+.trump-slot {
+  position: absolute;
+  min-height: 0;
+}
+
+.trump-slot {
+  left: 0;
+  right: 0;
+  top: 18px;
+  height: 82px;
+  z-index: 1;
+}
+
+.trump-slot .card {
+  position: absolute;
+  width: 80px;
+  height: 146px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+
+.trump-slot .pips,
+.trump-slot .court,
+.trump-slot .ace { visibility: hidden; }
+
+.deck-area.lonely .trump-slot .pips,
+.deck-area.lonely .trump-slot .court,
+.deck-area.lonely .trump-slot .ace { visibility: visible; }
+
+.deck-pile {
+  z-index: 2;
+  width: 72px;
+  height: 100px;
+  left: 50%;
+  top: 6px;
+  transform: translateX(-50%);
+}
+
+.deck-pile .back {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
+.deck-pile .back:nth-last-child(1) { z-index: 3; }
+.deck-pile .back:nth-last-child(2) { transform: translate(3px, 4px); z-index: 2; }
+.deck-pile .back:nth-last-child(3) { transform: translate(6px, 7px); z-index: 1; }
+
+.deck-area.lonely .deck-stack {
+  width: 90px;
+  height: 116px;
+}
+
+.deck-area.lonely .trump-slot {
+  top: 0;
+  height: 116px;
+}
+
+.deck-area.lonely .trump-slot .card {
+  width: 74px;
+  height: 104px;
+  transform: translate(-50%, -50%);
+}
+
+.deck-count span { display: block; }
+
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px;
+}
+
+.pair {
+  position: relative;
+  width: 96px;
+  height: 128px;
+}
+
+.pair .card {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.pair .card.defense {
+  left: 20px;
+  top: 22px;
+  z-index: 1;
+}
+
+.card.target {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.card {
+  width: 74px;
+  height: 104px;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: #1a1a1a;
+  border: 1px solid #eceae4;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28);
+}
+
+.card.is-trump {
+  box-shadow:
+    inset 0 0 0 2px #c6a15b,
+    0 8px 16px rgba(0, 0, 0, 0.28);
+}
+
+.board .card.selectable { cursor: pointer; }
+.board .card.selectable:hover { transform: translateY(-6px); }
+
+.card.red { color: #b11226; }
+
+.idx {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.85;
+  font-weight: 700;
+}
+
+.idx b { font-size: 16px; font-weight: 700; letter-spacing: -0.04em; }
+.idx-suit { width: 12px; height: 12px; display: block; }
+.idx.top { top: 3px; left: 4px; }
+.idx.bot { right: 4px; bottom: 3px; transform: rotate(180deg); }
+
+.pips { position: absolute; inset: 0; }
+
+.spot {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+  font-style: normal;
+  line-height: 0;
+}
+
+.spot svg { width: 100%; height: 100%; display: block; }
+.spot.flip { transform: translate(-50%, -50%) rotate(180deg); }
+
+.court {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  z-index: 0;
+}
+
+.court-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ace {
+  position: absolute;
+  inset: 0;
+}
+
+.ace-pip {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  width: 58%;
+  height: auto;
+  transform: translate(-50%, -50%);
+}
+
+.ace-mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34%;
+  height: auto;
+  transform: translate(-50%, -54%);
+}
+
+.human {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.18)),
+    #1a120e;
+  border: 1px solid rgba(198, 165, 106, 0.28);
+  border-radius: 16px;
+  padding: 12px 14px 16px;
+}
+
+.human.active { box-shadow: inset 0 0 0 2px var(--gold); }
+
+.hand {
+  display: flex;
+  justify-content: center;
+  min-height: 130px;
+  padding-top: 14px;
+}
+
+.hand .card {
+  width: 84px;
+  height: 118px;
+  margin-right: -48px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.hand .card.group-gap { margin-left: 64px; }
+.hand .card .idx b { font-size: 18px; }
+.hand .card .idx-suit { width: 14px; height: 14px; }
+.hand .card .spot { width: 24px; height: 24px; }
+.hand .card .ace-pip { width: 62%; }
+.hand .card:hover, .hand .card.playable { transform: translateY(-14px); }
+.hand .card.playable {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 10px 0 rgba(212, 179, 106, 0.28),
+    0 8px 16px rgba(0, 0, 0, 0.28);
+}
+.hand .card.playable.is-trump {
+  box-shadow:
+    inset 0 0 0 2px #c6a15b,
+    0 10px 0 rgba(212, 179, 106, 0.28),
+    0 8px 16px rgba(0, 0, 0, 0.28);
+}
+.hand .card.selected {
+  transform: translateY(-22px);
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+.hand .card.muted { cursor: default; }
+.hand .card.muted:hover { transform: none; }
+
+.log { grid-column: 2; min-height: 1.2em; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 18, 14, 0.62);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.overlay.hidden { display: none; }
+
+.dialog {
+  width: min(460px, 100%);
+  max-height: min(90dvh, 100%);
+  overflow: auto;
+  background: #f6f1e6;
+  color: var(--ink);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.dialog p, .dialog li { line-height: 1.45; }
+.dialog label { display: grid; gap: 6px; margin: 16px 0; font-weight: 650; }
+#sit-btn { width: 100%; margin-top: 8px; }
+.lobby-note { margin-bottom: 0; }
+#setup.hidden, #wait-panel.hidden { display: none; }
+.dialog select {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #c9bfae;
+  background: white;
+}
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.quiet {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid #c9bfae;
+}
+.rules ul { padding-left: 18px; }
+
+.empty {
+  color: rgba(247, 241, 227, 0.75);
+  font-size: 18px;
+}
+
+@media (hover: none) {
+  .hand .card:hover,
+  .hand .card.playable,
+  .hand .card.playable:hover { transform: none; }
+  .hand .card.muted:hover { transform: none; }
+  .board .card.selectable:hover { transform: none; }
+}
+
+@media (max-width: 720px) {
+  body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  .table {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    min-height: 100dvh;
+    padding:
+      calc(8px + env(safe-area-inset-top))
+      calc(8px + env(safe-area-inset-right))
+      calc(8px + env(safe-area-inset-bottom))
+      calc(8px + env(safe-area-inset-left));
+    gap: 8px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .topbar { flex-wrap: wrap; align-items: flex-start; gap: 8px; }
+  h1 { font-size: 22px; }
+  h2 { font-size: 16px; }
+  .status, .log { font-size: 14px; line-height: 1.35; }
+  .top-actions { margin-left: auto; }
+  .top-actions button, .actions .action {
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+
+  .opponents {
+    flex-direction: row;
+    min-height: 0;
+    gap: 8px;
+  }
+
+  .seat {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    padding: 6px 8px 8px;
+  }
+
+  .seat-name { margin-bottom: 4px; font-size: 13px; }
+  .backs { min-height: 40px; overflow: hidden; }
+  .backs .back { width: 28px; height: 40px; margin-right: -16px; }
+
+  .felt {
+    grid-template-columns: 112px 1fr;
+    gap: 6px;
+    padding: 8px;
+    min-height: 0;
+    border-width: 5px;
+  }
+
+  .deck-stack { width: 104px; height: 76px; }
+  .trump-slot { top: 8px; height: 56px; }
+  .trump-slot .card { width: 52px; height: 96px; }
+  .deck-pile { width: 46px; height: 64px; top: 4px; }
+  .deck-area.lonely .deck-stack { width: 64px; height: 86px; }
+  .deck-area.lonely .trump-slot { top: 0; height: 86px; }
+  .deck-area.lonely .trump-slot .card {
+    width: 52px;
+    height: 74px;
+    transform: translate(-50%, -50%);
+  }
+
+  .deck-count {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .deck-count span { display: block; }
+  .board { min-height: 96px; gap: 6px; }
+  .log { grid-column: 1 / -1; margin: 0; text-align: center; }
+
+  .card { width: 56px; height: 80px; }
+  .idx b { font-size: 13px; }
+  .idx-suit { width: 10px; height: 10px; }
+  .spot { width: 15px; height: 15px; }
+  .pair { width: 70px; height: 96px; }
+  .pair .card.defense { left: 12px; top: 14px; }
+
+  .human {
+    position: sticky;
+    bottom: 0;
+    padding: 8px 8px 10px;
+  }
+
+  .human-head { align-items: flex-start; gap: 8px; }
+
+  .hand {
+    justify-content: center;
+    justify-content: safe center;
+    min-height: 108px;
+    padding: 12px 2px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .hand .card {
+    width: 68px;
+    height: 96px;
+    margin-right: -22px;
+    flex: 0 0 auto;
+  }
+
+  .hand .card:last-child { margin-right: 0; }
+  .hand .card.group-gap { margin-left: 38px; }
+  .hand .card .idx b { font-size: 16px; }
+  .hand .card .idx-suit { width: 12px; height: 12px; }
+  .hand .card .spot { width: 18px; height: 18px; }
+  .hand .card:hover, .hand .card.playable { transform: none; }
+  .hand .card.selected { transform: none; }
+
+  .dialog { padding: 16px; }
+  .dialog .primary, .dialog .quiet { width: 100%; min-height: 44px; }
+  .dialog-actions { flex-direction: column; }
+  .dialog-actions button { width: 100%; }
+  .rules { font-size: 15px; }
+}
+
+.hand.quiet-defend .card,
+.hand.quiet-defend .card:hover,
+.hand.quiet-defend .card.playable,
+.hand.quiet-defend .card.playable:hover,
+.hand.quiet-defend .card.selected {
+  transform: none;
+  outline: none;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28);
+}
+
+.hand.quiet-defend .card.is-trump,
+.hand.quiet-defend .card.playable.is-trump {
+  box-shadow:
+    inset 0 0 0 2px #c6a15b,
+    0 8px 16px rgba(0, 0, 0, 0.28);
+}
